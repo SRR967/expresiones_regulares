@@ -1,4 +1,5 @@
 import re
+from errores import ManejadorDeErrores
 
 class AnalizadorLexico:
     """
@@ -9,14 +10,13 @@ class AnalizadorLexico:
     def __init__(self, expresion_regular: str):
         self.expresion_regular = expresion_regular
         self.tokens = []
-        self.errores = []
+        self.manejador_errores = ManejadorDeErrores()  # Instancia del manejador de errores
 
     def tokenizar(self):
         """
         Convierte la expresión regular en tokens, separando operadores,
         literales y paréntesis.
         """
-        # Definimos los tokens que queremos reconocer (literal, operador, paréntesis)
         patrones = {
             'LITERAL': r'[a-zA-Z0-9]',    # Cualquier carácter alfanumérico
             'OPERADOR': r'[.*+?|]',       # Operadores 
@@ -24,7 +24,6 @@ class AnalizadorLexico:
             'PARENTESIS_DER': r'\)'
         }
         
-        # Combinamos los patrones en una expresión regular
         token_regex = '|'.join(f'(?P<{nombre}>{patron})' for nombre, patron in patrones.items())
         for match in re.finditer(token_regex, self.expresion_regular):
             tipo_token = match.lastgroup
@@ -39,22 +38,20 @@ class AnalizadorLexico:
         prev_token = None
 
         for tipo, valor in self.tokens:
-            # Verificamos errores de balance de paréntesis
             if tipo == 'PARENTESIS_IZQ':
                 balance += 1
             elif tipo == 'PARENTESIS_DER':
                 balance -= 1
                 if balance < 0:
-                    self.errores.append("Paréntesis de cierre sin apertura correspondiente.")
+                    self.manejador_errores.agregar_error("Paréntesis de cierre sin apertura correspondiente.")
             
-            # Ejemplo de verificación de doble operador (p. ej., "++" o "**")
             if prev_token == 'OPERADOR' and tipo == 'OPERADOR':
-                self.errores.append(f"Operadores consecutivos '{valor}' no permitidos.")
+                self.manejador_errores.agregar_error(f"Operadores consecutivos '{valor}' no permitidos.")
             
             prev_token = tipo
 
         if balance != 0:
-            self.errores.append("Paréntesis sin cerrar en la expresión.")
+            self.manejador_errores.agregar_error("Paréntesis sin cerrar en la expresión.")
 
     def analizar(self):
         """
@@ -65,9 +62,9 @@ class AnalizadorLexico:
 
     def obtener_errores(self):
         """
-        Retorna una lista de errores encontrados en la expresión regular.
+        Retorna la lista de errores a través del manejador de errores.
         """
-        return self.errores
+        return self.manejador_errores.obtener_errores()
 
     def obtener_tokens(self):
         """
