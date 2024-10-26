@@ -19,7 +19,7 @@ class AnalizadorLexico:
         # Definimos los tokens que queremos reconocer (literal, operador, paréntesis)
         patrones = {
             'LITERAL': r'[a-zA-Z0-9]',    # Cualquier carácter alfanumérico
-            'OPERADOR': r'[.*+?|]',       # Operadores comunes de regex
+            'OPERADOR': r'[.*+?|]',       # Operadores 
             'PARENTESIS_IZQ': r'\(',
             'PARENTESIS_DER': r'\)'
         }
