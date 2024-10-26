@@ -1,4 +1,5 @@
 import re
+from errores import ManejadorDeErrores
 
 class MotorDeValidacion:
     """
@@ -8,7 +9,7 @@ class MotorDeValidacion:
     def __init__(self, expresion_regular: str):
         self.expresion_regular = expresion_regular
         self.regex = None
-        self.errores = []
+        self.manejador_errores = ManejadorDeErrores()  # Instancia del manejador de errores
         
         self.compilar_expresion()
     
@@ -20,14 +21,14 @@ class MotorDeValidacion:
         try:
             self.regex = re.compile(self.expresion_regular)
         except re.error as e:
-            self.errores.append(f"Error en la expresión regular: {e}")
+            self.manejador_errores.agregar_error(f"Error en la expresión regular: {e}")
     
     def validar_cadena(self, cadena: str) -> bool:
         """
         Valida si una cadena cumple con la expresión regular.
         """
         if self.regex is None:
-            self.errores.append("La expresión regular es inválida.")
+            self.manejador_errores.agregar_error("La expresión regular es inválida.")
             return False
         
         # Retorna True si la cadena cumple la expresión, False si no
@@ -44,6 +45,6 @@ class MotorDeValidacion:
     
     def obtener_errores(self):
         """
-        Retorna la lista de errores.
+        Retorna la lista de errores desde el manejador de errores.
         """
-        return self.errores
+        return self.manejador_errores.obtener_errores()
