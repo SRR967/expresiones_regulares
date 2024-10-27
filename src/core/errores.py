@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 class ManejadorDeErrores:
     """
     Clase para capturar y gestionar errores durante el procesamiento de

@@ -1,5 +1,9 @@
 import re
-from errores import ManejadorDeErrores
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from .errores import ManejadorDeErrores
 
 class MotorDeValidacion:
     """
