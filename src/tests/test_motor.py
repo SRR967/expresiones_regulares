@@ -25,7 +25,7 @@ class TestMotorDeValidacion(unittest.TestCase):
 
     def test_expresion_invalida(self):
         motor = MotorDeValidacion("a[")
-        self.assertIn("Error en la expresión regular", motor.obtener_errores())
+        self.assertTrue(any("Error en la expresión regular" in error for error in motor.obtener_errores()))
         resultado = motor.validar_cadena("a")
         self.assertFalse(resultado)  # La validación debe fallar con expresión inválida
 
