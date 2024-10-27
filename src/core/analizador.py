@@ -22,7 +22,7 @@ class AnalizadorLexico:
         """
         patrones = {
             'LITERAL': r'[a-zA-Z0-9]',    # Cualquier carácter alfanumérico
-            'OPERADOR': r'[.*+?|]',       # Operadores 
+            'OPERADOR': r'[*+|]',       # Operadores 
             'PARENTESIS_IZQ': r'\(',
             'PARENTESIS_DER': r'\)'
         }
