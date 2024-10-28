@@ -14,6 +14,7 @@ class AnalizadorLexico:
         self.expresion_regular = expresion_regular
         self.tokens = []
         self.manejador_errores = ManejadorDeErrores()  # Instancia del manejador de errores
+        
 
     def tokenizar(self):
         """

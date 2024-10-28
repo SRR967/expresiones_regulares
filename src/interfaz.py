@@ -31,6 +31,22 @@ class InterfazUsuario:
         expresion = self.entry_expresion.get()
         cadenas = self.entry_cadenas.get().split(',')
 
+        # Verificar que la expresión no esté vacía o solo contenga espacios
+        if not expresion.strip():
+            messagebox.showerror("Error", "La expresión regular no puede estar vacía o solo contener espacios.")
+            # Limpiar el área de resultados
+            self.text_resultado.delete(1.0, tk.END)
+            return
+
+        # Verificar que cada cadena no esté vacía
+        for cadena in cadenas:
+            if cadena=="":
+                messagebox.showerror("Error", "Las cadenas a validar no pueden estar vacías o solo contener espacios.")
+                #Limpiar el área de resultados
+                self.text_resultado.delete(1.0, tk.END)
+                return
+
+
         # Limpiar el área de resultados
         self.text_resultado.delete(1.0, tk.END)
 
@@ -58,7 +74,11 @@ class InterfazUsuario:
         # Mostrar los resultados de validación
         self.text_resultado.insert(tk.END, "\nResultados de Validación:\n")
         for cadena, es_valido in resultados.items():
-            resultado = "válida" if es_valido else "inválida"
+            if es_valido:
+                resultado = "válida"
+            else: 
+                resultado = "inválida"
+            
             self.text_resultado.insert(tk.END, f"{cadena.strip()}: {resultado}\n")
         
         # Mostrar errores de validación si existen

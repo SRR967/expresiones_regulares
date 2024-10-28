@@ -14,7 +14,8 @@ class MotorDeValidacion:
         self.expresion_regular = expresion_regular
         self.regex = None
         self.manejador_errores = ManejadorDeErrores()  # Instancia del manejador de errores
-        
+
+
         self.compilar_expresion()
     
     def compilar_expresion(self):
@@ -31,6 +32,8 @@ class MotorDeValidacion:
         """
         Valida si una cadena cumple con la expresión regular.
         """
+
+        #Valida si la expresion regular es invalida
         if self.regex is None:
             self.manejador_errores.agregar_error("La expresión regular es inválida.")
             return False
