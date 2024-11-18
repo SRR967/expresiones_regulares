@@ -12,6 +12,21 @@ class Nodo:
         """
         self.transiciones.append((simbolo, destino))
 
+    def editar_transicion(self, destino, nuevo_simbolo):
+        """
+        Edita el valor de una transición entre este nodo y otro.
+        
+        :param destino: Nodo destino (instancia de Nodo).
+        :param nuevo_simbolo: Nuevo valor para la transición.
+        """
+        for i, (simbolo, nodo_destino) in enumerate(self.transiciones):
+            if nodo_destino == destino:  # Verificar si la transición apunta al nodo destino correcto
+                self.transiciones[i] = (nuevo_simbolo, nodo_destino)  # Actualizar el símbolo
+                return  # Salir después de actualizar
+        raise ValueError(f"No existe una transición hacia el nodo {destino.nombre}")
+
+
+
 
 class Grafo:
     def __init__(self):
@@ -34,6 +49,26 @@ class Grafo:
 
     def agregar_estado_final(self, nombre):
         self.estados_finales.add(self.agregar_nodo(nombre))
+
+    def editar_transicion(self, origen, destino, nuevo_simbolo):
+        """
+        Llama al método 'editar_transicion' de un nodo específico.
+        
+        :param origen: Nombre del nodo origen.
+        :param destino: Nombre del nodo destino.
+        :param nuevo_simbolo: Nuevo símbolo para la transición.
+        """
+        if origen not in self.nodos:
+            raise ValueError(f"El nodo origen '{origen}' no existe.")
+        if destino not in self.nodos:
+            raise ValueError(f"El nodo destino '{destino}' no existe.")
+        
+        # Obtener los nodos de origen y destino
+        nodo_origen = self.nodos[origen]
+        nodo_destino = self.nodos[destino]
+        
+        # Llamar al método 'editar_transicion' del nodo origen
+        nodo_origen.editar_transicion(nodo_destino, nuevo_simbolo)
 
     def mostrar(self):
         """

@@ -11,8 +11,11 @@ class GeneradorDeAutomatas:
         grafo = Grafo()
         estado_anterior = None
         valor_anterior = None
+        pila = []  # Pila para manejar subexpresiones y paréntesis
+
 
         for i, (tipo, valor) in enumerate(tokens):
+
             if tipo == 'LITERAL':
                 if valor_anterior == '|':
                     # Nodo siguiente desde la unión
@@ -44,6 +47,42 @@ class GeneradorDeAutomatas:
                     valor_anterior = valor
                     continue  # Pasar al siguiente token después de manejar la unión
 
+                if valor_anterior == '(':
+                    if len(pila) ==0:
+                        pila.append((estado_actual))
+
+                    # Nodo siguiente desde la unión
+                    estado_siguiente = f"q{i+1}"   # Nodo siguiente
+                    grafo.agregar_nodo(estado_siguiente)
+
+                    # Conectar el estado inicial con el nuevo camino (literal)
+                    grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
+
+                    # Actualizar el estado anterior
+                    estado_anterior = estado_siguiente
+
+                    # Actualizar el valor anterior
+                    valor_anterior = valor
+                    continue
+
+                if valor_anterior == ')':
+                    # Nodo siguiente desde la unión
+                    estado_siguiente = f"q{i+1}"   # Nodo siguiente
+                    grafo.agregar_nodo(estado_siguiente)
+
+                    # Conectar el estado inicial con el nuevo camino (literal)
+                    grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
+
+                    # Actualizar el estado anterior
+                    estado_anterior = estado_siguiente
+
+                    # Actualizar el valor anterior
+                    valor_anterior = valor
+                    #Sacar el ultimo valor de la pila
+                    pila.pop()
+
+                    continue
+
 
                 # Crear dos nodos: uno actual y uno siguiente
                 estado_actual = f"q{i}"         # Nodo actual
@@ -69,10 +108,16 @@ class GeneradorDeAutomatas:
 
             elif tipo == 'OPERADOR' and valor == '+':
                 # Manejo del operador de cerradura positiva (+)
+                
+                if valor_anterior == ")":
+                    estado_inicial_aux = pila.pop()
+                    grafo.conectar(estado_anterior,estado_inicial_aux,simbolo=None)
+                    continue
 
                 # Crear una conexión desde el nodo anterior hacia sí mismo
                 if estado_anterior is not None:
                     grafo.conectar(estado_anterior, estado_anterior, simbolo=valor_anterior)
+
 
             elif tipo == 'OPERADOR' and valor == '*':
                 # Manejo del operador de cerradura de Kleene (*)
@@ -85,6 +130,14 @@ class GeneradorDeAutomatas:
                 estado_siguiente = f"q{i+1}"   # Nodo siguiente
                 grafo.agregar_nodo(estado_siguiente)
                 grafo.conectar(estado_anterior, estado_siguiente, simbolo=None)
+
+                #Editar transicion
+                grafo.editar_transicion(estado_actual,estado_anterior,None)
+
+
+            
+            if valor== '(':
+                pila.append(estado_siguiente)
 
             #Actualizar el estado anterior
             estado_anterior = estado_siguiente
