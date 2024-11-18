@@ -29,6 +29,22 @@ class GeneradorDeAutomatas:
                     valor_anterior = valor
                     continue  # Pasar al siguiente token después de manejar la unión
 
+                if valor_anterior == '+':
+                    # Nodo siguiente desde la unión
+                    estado_siguiente = f"q{i+1}"   # Nodo siguiente
+                    grafo.agregar_nodo(estado_siguiente)
+
+                    # Conectar el estado inicial con el nuevo camino (literal)
+                    grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
+
+                    # Actualizar el estado anterior
+                    estado_anterior = estado_siguiente
+
+                    # Actualizar el valor anterior
+                    valor_anterior = valor
+                    continue  # Pasar al siguiente token después de manejar la unión
+
+
                 # Crear dos nodos: uno actual y uno siguiente
                 estado_actual = f"q{i}"         # Nodo actual
                 estado_siguiente = f"q{i+1}"   # Nodo siguiente
@@ -56,12 +72,11 @@ class GeneradorDeAutomatas:
 
                 # Crear una conexión desde el nodo anterior hacia sí mismo
                 if estado_anterior is not None:
-                    grafo.conectar(estado_anterior, estado_anterior, simbolo=None)
+                    grafo.conectar(estado_anterior, estado_anterior, simbolo=valor_anterior)
+                    #estado_siguiente=estado_anterior
 
-            # ** Conexión hacia adelante **
-            # Actualizar el estado anterior si no es un operador especial
-            if tipo == 'LITERAL' or valor == '+':
-                estado_anterior = estado_siguiente
+            #Actualizar el estado anterior
+            estado_anterior = estado_siguiente
 
             # Actualizar el valor anterior
             valor_anterior = valor
