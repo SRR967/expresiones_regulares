@@ -16,7 +16,7 @@ class GeneradorDeAutomatas:
 
         for i, (tipo, valor) in enumerate(tokens):
             #Pasa al siguiente ciclo si la ER empieza por (
-            if i == 1 and valor == '(':
+            if i == 0 and valor == '(':
                 valor_anterior=valor
                 continue
 
@@ -52,23 +52,24 @@ class GeneradorDeAutomatas:
                     continue  # Pasar al siguiente token después de manejar la unión
 
                 if valor_anterior == '(':
-                    
-                    # Nodo siguiente desde la unión
-                    estado_siguiente = f"q{i+1}"   # Nodo siguiente
-                    grafo.agregar_nodo(estado_siguiente)
+                    if  i !=1:
+                        # Nodo siguiente desde la unión
+                        estado_siguiente = f"q{i+1}"   # Nodo siguiente
+                        grafo.agregar_nodo(estado_siguiente)
 
-                    # Conectar el estado inicial con el nuevo camino (literal)
-                    grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
+                        # Conectar el estado inicial con el nuevo camino (literal)
+                        grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
 
-                    #Agregar valor a la pila
-                    pila.append((estado_anterior))
+                        #Agregar valor a la pila
+                        pila.append((estado_anterior))
 
-                    # Actualizar el estado anterior
-                    estado_anterior = estado_siguiente
+                        # Actualizar el estado anterior
+                        estado_anterior = estado_siguiente
 
-                    # Actualizar el valor anterior
-                    valor_anterior = valor
-                    continue
+                        # Actualizar el valor anterior
+                        valor_anterior = valor
+                        continue
+
 
                 if valor_anterior == ')':
                     # Nodo siguiente desde la unión
@@ -100,6 +101,10 @@ class GeneradorDeAutomatas:
                 # Conectar el nodo actual con el siguiente usando el literal como símbolo
                 grafo.conectar(estado_actual, estado_siguiente, simbolo=valor)
 
+                #Caso especial para cuando se inicia con (
+                if valor_anterior== "(":
+                    pila.append(estado_actual)
+
                 # Establecer el estado inicial si es el primer token
                 if estado_anterior is None:
                     grafo.set_estado_inicial(estado_actual)
@@ -117,6 +122,7 @@ class GeneradorDeAutomatas:
                 if valor_anterior == ")":
                     estado_inicial_aux = pila.pop()
                     grafo.conectar(estado_anterior,estado_inicial_aux,simbolo=None)
+                    valor_anterior=valor
                     continue
 
                 # Crear una conexión desde el nodo anterior hacia sí mismo
@@ -130,6 +136,7 @@ class GeneradorDeAutomatas:
                     estado_inicial_aux = pila.pop()
                     grafo.conectar(estado_anterior,estado_inicial_aux,simbolo=None)
                     estado_anterior= estado_inicial_aux
+                    valor_anterior=valor
                     continue
 
                 # Crear una conexión desde el nodo anterior hacia sí mismo
