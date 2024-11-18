@@ -121,6 +121,12 @@ class GeneradorDeAutomatas:
 
             elif tipo == 'OPERADOR' and valor == '*':
                 # Manejo del operador de cerradura de Kleene (*)
+                if valor_anterior == ")":
+                    estado_inicial_aux = pila.pop()
+                    grafo.conectar(estado_anterior,estado_inicial_aux,simbolo=None)
+                    estado_anterior= estado_inicial_aux
+                    continue
+
 
                 # Crear una conexión desde el nodo anterior hacia sí mismo
                 if estado_anterior is not None:
