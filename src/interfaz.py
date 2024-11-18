@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from core.analizador import AnalizadorLexico
 from core.motor_validacion import MotorDeValidacion
+from core.generador_automata import GeneradorDeAutomatas
 
 class InterfazUsuario:
     def __init__(self, root):
@@ -25,6 +26,10 @@ class InterfazUsuario:
         # Área de texto para mostrar resultados
         self.text_resultado = tk.Text(root, width=60, height=15)
         self.text_resultado.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+
+        # Boton para ver el automata
+        self.btn_generar_automata = tk.Button(root, text="Generar Autómata", command=self.mostrar_automata)
+        self.btn_generar_automata.grid(row=4, column=0, columnspan=2, pady=10)
 
     def validar_expresion(self):
         # Obtener la expresión y las cadenas
@@ -85,4 +90,49 @@ class InterfazUsuario:
         if motor.obtener_errores():
             errores = "\n".join(motor.obtener_errores())
             self.text_resultado.insert(tk.END, f"\nErrores durante la validación:\n{errores}\n")
+
+    def mostrar_automata(self):
+        # Obtener la expresión regular
+        expresion = self.entry_expresion.get()
+        #Eliminar los espacios
+        expresion = expresion.replace(" ","")
+        if not expresion.strip():
+            messagebox.showerror("Error", "La expresión regular no puede estar vacía.")
+            return
+
+        # Analizar tokens
+        analizador = AnalizadorLexico(expresion)
+        analizador.analizar()
+        if analizador.obtener_errores():
+            messagebox.showerror("Error", "Expresión regular inválida.")
+            return
+
+        # Obtener tokens generados por el analizador
+        tokens = analizador.obtener_tokens()
+
+        # Crear el generador de autómatas
+        generador = GeneradorDeAutomatas()
+
+        # Generar el AFND y convertirlo a AFD
+        try:
+            afnd = generador.construir_grafo_desde_tokens(tokens)  # Generar el AFND
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un error al construir el autómata: {e}")
+            return
+
+        # Mostrar el AFD en una nueva ventana
+        ventana_automata = tk.Toplevel(self.root)
+        ventana_automata.title("Visualización del Autómata Determinista (AFD)")
+        label = tk.Label(ventana_automata, text="Autómata Finito Determinista (AFD):")
+        label.pack()
+        canvas = tk.Canvas(ventana_automata, width=800, height=600)
+        canvas.pack()
+
+        # Generar y visualizar el AFD con Graphviz
+        dot = afnd.visualizar()  # Visualizar el AFD
+        dot.render("automata_determinista", format="png", cleanup=True)
+        img = tk.PhotoImage(file="automata_determinista.png")
+        canvas.create_image(400, 300, image=img)
+        canvas.image = img
+
 
