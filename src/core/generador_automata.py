@@ -29,7 +29,7 @@ class GeneradorDeAutomatas:
                     valor_anterior = valor
                     continue  # Pasar al siguiente token después de manejar la unión
 
-                if valor_anterior == '+':
+                if valor_anterior == '+' or valor_anterior== '*':
                     # Nodo siguiente desde la unión
                     estado_siguiente = f"q{i+1}"   # Nodo siguiente
                     grafo.agregar_nodo(estado_siguiente)
@@ -73,7 +73,18 @@ class GeneradorDeAutomatas:
                 # Crear una conexión desde el nodo anterior hacia sí mismo
                 if estado_anterior is not None:
                     grafo.conectar(estado_anterior, estado_anterior, simbolo=valor_anterior)
-                    #estado_siguiente=estado_anterior
+
+            elif tipo == 'OPERADOR' and valor == '*':
+                # Manejo del operador de cerradura de Kleene (*)
+
+                # Crear una conexión desde el nodo anterior hacia sí mismo
+                if estado_anterior is not None:
+                    grafo.conectar(estado_anterior, estado_anterior, simbolo=valor_anterior)
+
+                # Crear una transición epsilon desde el nodo anterior al siguiente
+                estado_siguiente = f"q{i+1}"   # Nodo siguiente
+                grafo.agregar_nodo(estado_siguiente)
+                grafo.conectar(estado_anterior, estado_siguiente, simbolo=None)
 
             #Actualizar el estado anterior
             estado_anterior = estado_siguiente
