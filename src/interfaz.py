@@ -94,6 +94,8 @@ class InterfazUsuario:
     def mostrar_automata(self):
         # Obtener la expresión regular
         expresion = self.entry_expresion.get()
+        #Eliminar los espacios
+        expresion = expresion.replace(" ","")
         if not expresion.strip():
             messagebox.showerror("Error", "La expresión regular no puede estar vacía.")
             return

@@ -15,6 +15,10 @@ class GeneradorDeAutomatas:
 
 
         for i, (tipo, valor) in enumerate(tokens):
+            #Pasa al siguiente ciclo si la ER empieza por (
+            if i == 1 and valor == '(':
+                valor_anterior=valor
+                continue
 
             if tipo == 'LITERAL':
                 if valor_anterior == '|':
@@ -48,15 +52,16 @@ class GeneradorDeAutomatas:
                     continue  # Pasar al siguiente token después de manejar la unión
 
                 if valor_anterior == '(':
-                    if len(pila) ==0:
-                        pila.append((estado_actual))
-
+                    
                     # Nodo siguiente desde la unión
                     estado_siguiente = f"q{i+1}"   # Nodo siguiente
                     grafo.agregar_nodo(estado_siguiente)
 
                     # Conectar el estado inicial con el nuevo camino (literal)
                     grafo.conectar(estado_anterior, estado_siguiente, simbolo=valor)
+
+                    #Agregar valor a la pila
+                    pila.append((estado_anterior))
 
                     # Actualizar el estado anterior
                     estado_anterior = estado_siguiente
@@ -127,7 +132,6 @@ class GeneradorDeAutomatas:
                     estado_anterior= estado_inicial_aux
                     continue
 
-
                 # Crear una conexión desde el nodo anterior hacia sí mismo
                 if estado_anterior is not None:
                     grafo.conectar(estado_anterior, estado_anterior, simbolo=valor_anterior)
@@ -139,11 +143,11 @@ class GeneradorDeAutomatas:
 
                 #Editar transicion
                 grafo.editar_transicion(estado_actual,estado_anterior,None)
-
-
             
             if valor== '(':
-                pila.append(estado_siguiente)
+                # Agregar el estado siguiente a la pila para manejar la subexpresión
+                pila.append(estado_anterior)
+                continue
 
             #Actualizar el estado anterior
             estado_anterior = estado_siguiente
