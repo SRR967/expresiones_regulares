@@ -112,13 +112,13 @@ class InterfazUsuario:
 
         ventana_automata = tk.Toplevel(self.root)
         ventana_automata.title("Visualización del Autómata")
-        label = tk.Label(ventana_automata, text="Autómata Finito Determinista (AFD):")
+        label = tk.Label(ventana_automata, text="Autómata Finito No Determinista")
         label.pack()
         canvas = tk.Canvas(ventana_automata, width=800, height=600)
         canvas.pack()
 
         dot = afnd.visualizar()
         dot.render("automata_determinista", format="png", cleanup=True)
-        img = tk.PhotoImage(file="automata_determinista.png")
+        img = tk.PhotoImage(file="automata_no_determinista.png")
         canvas.create_image(400, 300, image=img)
         canvas.image = img
