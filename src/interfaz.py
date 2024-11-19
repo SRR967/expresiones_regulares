@@ -119,6 +119,6 @@ class InterfazUsuario:
 
         dot = afnd.visualizar()
         dot.render("automata_determinista", format="png", cleanup=True)
-        img = tk.PhotoImage(file="automata_no_determinista.png")
+        img = tk.PhotoImage(file="automata_determinista.png")
         canvas.create_image(400, 300, image=img)
         canvas.image = img
