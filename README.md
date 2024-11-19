@@ -100,9 +100,23 @@ GUI construida con Tkinter que permite al usuario interactuar con el proyecto.
 
 ### **Instalación**
 
-1. **Instalar dependencias:**
+
+1. **Descargar programa:**
+    ```bash
+   git clone https://github.com/SRR967/expresiones_regulares.git
+   cd expresiones_regulares
+
+2. **Instalar dependencias:**
    ```bash
    pip install graphviz
+
+3. **Ejecutar la aplicación:**
+
+    ```bash
+    python main.py
+
+
+
 
 ## Uso de la Aplicación
 
