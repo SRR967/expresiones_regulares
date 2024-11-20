@@ -110,6 +110,8 @@ GUI construida con Tkinter que permite al usuario interactuar con el proyecto.
    ```bash
    pip install graphviz
 
+   Tambien se puede hacer a traves del siguiente link: https://graphviz.org/download/
+
 3. **Ejecutar la aplicación:**
 
     ```bash
